@@ -19,7 +19,7 @@ Para conectar una tienda, completar `site/dist/config.js` con el dominio `*.mysh
 - Catálogo, categorías, variantes, precios y disponibilidad desde Shopify.
 - Carrito persistente; pago deshabilitado para la primera publicación.
 - Fotografías normales; opción de visor 3D solo si el producto tiene un GLB compatible.
-- Pendiente: cargar y validar modelos reales, conversión de STL, publicar el tema en Shopify y probar compras antes de habilitarlas.
+- Pendiente: cargar y validar modelos reales, conversión de STL, probar compras antes de habilitarlas.
 
 `catalog-import/` conserva la fuente y el CSV de la importación inicial. Ese CSV contiene los valores provisionales iniciales (precio cero y venta deshabilitada); **no representa los precios ni el stock actuales y no debe reimportarse para actualizar la tienda**.
 
@@ -35,4 +35,4 @@ Más detalles en [site/README.md](site/README.md). Three.js se distribuye con su
 
 Ejecutar `python3 scripts/build-shopify-theme.py` después de provisionar el `config.js` local. Genera `release/areas3d-v1-pago-no-habilitado.zip`, para subir como tema desde Tienda online. El paquete incluye el token público Storefront y está excluido de Git; nunca usar un token privado en esa configuración.
 
-El pago está bloqueado en la interfaz y antes de crear un checkout desde esta aplicación mediante `site/dist/checkout-policy.js`. Esto no cambia la configuración general de pagos de Shopify ni otros canales. La carga y publicación del tema aún requieren verificación en el dominio de producción.
+El pago está bloqueado en la interfaz y antes de crear un checkout desde esta aplicación mediante `site/dist/checkout-policy.js`. Esto no cambia la configuración general de pagos de Shopify ni otros canales. Publicado en https://areas3d.dannyhub.com/ el 3 de octubre de 2026, tema `146201706580`. Shopify muestra la tienda pública. Verificados catálogo de 23 productos, carrito y botón deshabilitado; Savor se conserva como respaldo.
