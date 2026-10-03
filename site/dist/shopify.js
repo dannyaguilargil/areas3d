@@ -1,3 +1,4 @@
+import {assertCheckoutEnabled} from './checkout-policy.js';
 import {canPurchase} from './catalog-policy.js';
 import {shopifyConfig as config} from './config.js?v=shopify-1';
 export const connected=Boolean(config.domain && config.publicStorefrontToken);
@@ -11,4 +12,4 @@ export async function getProducts(){
  }while(after);
  return products;
 }
-export async function createCheckout(lines){if(!lines.length||lines.some(l=>!canPurchase(l.product,l.variant)))throw new Error("Hay piezas de catálogo que todavía no están disponibles para comprar.");const data=await request(`mutation($input:CartInput!){ cartCreate(input:$input){cart{checkoutUrl} userErrors{message}}}`,{input:{lines:lines.map(l=>({merchandiseId:l.variant.id,quantity:l.quantity}))}});if(data.cartCreate.userErrors.length||!data.cartCreate.cart)throw new Error('Revisa la disponibilidad de los productos antes de pagar.');return data.cartCreate.cart.checkoutUrl;}
+export async function createCheckout(lines){assertCheckoutEnabled();if(!lines.length||lines.some(l=>!canPurchase(l.product,l.variant)))throw new Error("Hay piezas de catálogo que todavía no están disponibles para comprar.");const data=await request(`mutation($input:CartInput!){ cartCreate(input:$input){cart{checkoutUrl} userErrors{message}}}`,{input:{lines:lines.map(l=>({merchandiseId:l.variant.id,quantity:l.quantity}))}});if(data.cartCreate.userErrors.length||!data.cartCreate.cart)throw new Error('Revisa la disponibilidad de los productos antes de pagar.');return data.cartCreate.cart.checkoutUrl;}
