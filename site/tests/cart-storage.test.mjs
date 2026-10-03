@@ -1,0 +1,9 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createCartStorage,restoreCart} from '../dist/cart-storage.js';
+const memory=()=>{const data=new Map();return {getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v)}};
+const product={id:'p',variants:[{id:'v',availableForSale:true,price:{amount:'200'}}]};
+test('reload restores quantity using current catalog price, not a stored price',()=>{const data=memory();const store=createCartStorage('demo',data);store.save([{variant:{id:'v',price:{amount:'1'}},quantity:2}]);const result=restoreCart(createCartStorage('demo',data).read(),[product]);assert.equal(result.cart[0].quantity,2);assert.equal(result.cart[0].variant.price.amount,'200');assert.equal(data.getItem('demo').includes('price'),false)});
+test('unavailable and deleted variants are removed',()=>{const result=restoreCart([{variantId:'gone',quantity:2},{variantId:'v',quantity:1}],[{...product,variants:[{id:'v',availableForSale:false}]}]);assert.deepEqual(result.cart,[]);assert.equal(result.changed,true)});
+test('invalid, expired and inaccessible storage do not crash',()=>{const data=memory();data.setItem('x',JSON.stringify({version:1,savedAt:Date.now(),lines:[{variantId:'v',quantity:-2},{variantId:'v',quantity:1.5},{variantId:'v',quantity:1000}]}));assert.deepEqual(createCartStorage('x',data).read(),[]);data.setItem('x',JSON.stringify({version:1,savedAt:0,lines:[{variantId:'v',quantity:1}]}));assert.deepEqual(createCartStorage('x',data).read(),[]);const blocked=createCartStorage('x',{getItem(){throw Error()},setItem(){throw Error()}});assert.deepEqual(blocked.read(),[]);blocked.save([]);assert.equal(blocked.available,false)});
+test('demo and real store never share a cart',()=>{const data=memory();createCartStorage('demo',data).save([{variant:{id:'v'},quantity:1}]);assert.deepEqual(createCartStorage('store',data).read(),[])});

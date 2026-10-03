@@ -1,0 +1,18 @@
+# Local storefront configuration; copy the example when setting up a checkout.
+site/dist/config.js
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+# Local hosting and assistant metadata
+.openai/
+.codex/
+.agents/
+# Dependencies and local artifacts
+node_modules/
+__pycache__/
+*.log
+.DS_Store
