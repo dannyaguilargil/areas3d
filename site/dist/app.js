@@ -8,8 +8,8 @@ import {createCartStorage,restoreCart} from './cart-storage.js?v=catalog-2';
 const storage=createCartStorage('areas3d:cart:v1:'+ (connected?shopifyConfig.domain:'demo'),{getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value)});
 let catalogReady=false,checkoutBusy=false;
 function restore(){const result=restoreCart(storage.read(),products);cart=result.cart;catalogReady=true;renderCart();if(result.changed)notify('Actualizamos tu carrito: algunas piezas ya no están disponibles.');}
-const money=p=>new Intl.NumberFormat('es-CO',{style:'currency',currency:p.currencyCode,maximumFractionDigits:0}).format(Number(p.amount));
-const examples=[['vase','Vórtice','Jarrón escultórico · diseño paramétrico',68000],['knot','Nudo','Objeto decorativo · geometría continua',42000],['arch','Arco','Objeto escultórico · formas esenciales',54000]].map(([kind,title,description,amount],i)=>({id:`demo-${i}`,kind,title,description,variants:['Azul océano','Blanco polar'].map((title,j)=>({id:`demo-${i}-${j}`,title,availableForSale:true,price:{amount:String(amount),currencyCode:'COP'}}))}));
+const money=p=>new Intl.NumberFormat('es-CO',{style:'currency',currency:p.currencyCode,maximumFractionDigits:0}).format(Number(p.amount))+(p.currencyCode==='COP'?' COP':'');
+const examples=[['vase','Vórtice','Jarrón escultórico · diseño paramétrico',50000],['knot','Nudo','Objeto decorativo · geometría continua',50000],['arch','Arco','Objeto escultórico · formas esenciales',50000]].map(([kind,title,description,amount],i)=>({id:`demo-${i}`,kind,title,description,variants:['Azul océano','Blanco polar'].map((title,j)=>({id:`demo-${i}-${j}`,title,availableForSale:true,price:{amount:String(amount),currencyCode:'COP'}}))}));
 let products=examples,cart=[];const q=s=>document.querySelector(s);const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function notify(text){q('#toast').textContent=text;q('#toast').classList.add('visible');clearTimeout(notify.timer);notify.timer=setTimeout(()=>q('#toast').classList.remove('visible'),2600)}
 let selectedCategory='Todos';
